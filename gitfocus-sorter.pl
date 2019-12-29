@@ -19,11 +19,11 @@
 # regex to do this.
 #
 # If your GitLab/GitHub project were called
-# dev / web / en / support and you want to sort those items
+# content / web / support / en and you want to sort those items
 # into an OmniFocus project called "Support Pages", you could
 # use this:
 #
-#     print "Support Pages" if $page_title =~ m`dev / web / en / support`;
+#     print "Support Pages" if $page_title =~ m`content / web / support / en`;
 #
 # You might try using a search like m`support` but an action
 # could be sorted incorrectly if the word 'support' appears
@@ -37,7 +37,7 @@
 my $page_title = shift;
 
 # Example:
-#     print "PROJECT NAME" if $page_title =~ m`SEARCH STRING`;
+#     print "OMNIFOCUS PROJECT NAME" if $page_title =~ m`SEARCH STRING`;
 
 # Delete the example and add your projects below:
-print "PROJECT NAME" if $page_title =~ m`SEARCH STRING`;
+print "OMNIFOCUS PROJECT NAME" if $page_title =~ m`SEARCH STRING`;

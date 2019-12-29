@@ -95,8 +95,8 @@ tell application "OmniFocus"
 				
 				-- display the alert in Safari so we don't have to switch to OmniFocus
 				tell application "Safari"
-					set _alert_message to "Action Created in " & _project_sort
-					set _alert_result to display alert _alert_message message _action_title ¬
+					set _alert_heading to "Action Created in " & _project_sort
+					set _alert_result to display alert _alert_heading message _action_title ¬
 						buttons {"Show in OmniFocus", "OK"} default button "OK" giving up after 5
 				end tell
 				
