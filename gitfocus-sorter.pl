@@ -4,7 +4,7 @@
 # gitfocus-sorter.pl
 # 
 # By Ryan Dotson
-# 18 December 2019
+# 29 December 2019
 #
 # This script evaluates the web page title and will determine which
 # project the resulting action should be sorted into.

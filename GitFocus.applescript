@@ -6,8 +6,8 @@
 --  - Ryan Dotson:       original scripts, editing and documentation
 --  - Rosemary Orchard:  issue content and author extraction, 'Show in OmniFocus'
 --
--- Version 3
--- 18 December 2019
+-- Version 1.0.2
+-- 29 December 2019
 --
 -- <https://github.com/nostodnayr/gitfocus>
 --
@@ -59,23 +59,23 @@ tell document 1 of application "Safari"
 	try
 		set _action_note to _page_url & return & "Created by: " & _issue_author & return & return & _issue_content
 	on error
-		set _action_note to _page_url & return & return & "(Issue author or text could not be determined, sorry. â€“r/râ€“)"
+		set _action_note to _page_url & return & return & "(Issue author or text could not be determined, sorry. Ðr/rÐ)"
 	end try
 end tell
 
 try
-	set _action_title to Â¬
+	set _action_title to Â
 		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-titler.pl '" & _page_title & "'"
 on error errMsg number eNum
-	display alert "Couldnâ€™t run the GitFocus Titler" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
+	display alert "CouldnÕt run the GitFocus Titler" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
 	set _action_title to "**NOT MATCHED**"
 end try
 
 try
-	set _project_sort to Â¬
+	set _project_sort to Â
 		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-sorter.pl '" & _page_title & "'"
 on error errMsg number eNum
-	display alert "Couldnâ€™t run the GitFocus Sorter" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
+	display alert "CouldnÕt run the GitFocus Sorter" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
 	set _project_sort to ""
 end try
 
@@ -96,7 +96,7 @@ tell application "OmniFocus"
 				-- display the alert in Safari so we don't have to switch to OmniFocus
 				tell application "Safari"
 					set _alert_heading to "Action Created in " & _project_sort
-					set _alert_result to display alert _alert_heading message _action_title Â¬
+					set _alert_result to display alert _alert_heading message _action_title Â
 						buttons {"Show in OmniFocus", "OK"} default button "OK" giving up after 5
 				end tell
 				
