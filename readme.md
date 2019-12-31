@@ -3,9 +3,22 @@ GitFocus
 
 *Automate entering GitHub & GitLab issues into OmniFocus*
 
+[Download the latest release](https://github.com/nostodnayr/gitfocus/releases/latest).
+
 To read more about the creation of GitFocus and how it works, see <https://nostodnayr.net/2019/12/gitfocus>.
 
-Download the latest release from <https://github.com/nostodnayr/gitfocus/releases/latest>.
+
+
+To use GitFocus
+---------------
+
+1. Copy the scripts to your Safari scripts folder at `~/Library/Scripts/Applications/Safari/`
+2. Edit `gitfocus-sorter.pl` to add your GitLab or GitHub, and OmniFocus projects. Full instructions are in the file.
+3. Run the AppleScript. You can invoke it from the system Scripts menu, but I recommend using a keyboard shortcut assigned with [FastScripts][fs].
+
+[fs]: https://red-sweater.com/fastscripts/ "FastScripts"
+
+
 
 How the scripts work
 --------------------
