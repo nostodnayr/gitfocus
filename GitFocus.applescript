@@ -6,8 +6,8 @@
 --  - Ryan Dotson:       original scripts, editing and documentation
 --  - Rosemary Orchard:  issue content and author extraction, 'Show in OmniFocus'
 --
--- Version 1.0.3
--- 9 January 2020
+-- Version 1.0.4
+-- 11 January 2020
 --
 -- <https://github.com/nostodnayr/gitfocus>
 --
