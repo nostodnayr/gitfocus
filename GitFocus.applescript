@@ -65,7 +65,7 @@ end tell
 
 try
 	set _action_title to Â
-		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-titler.pl" & quoted form of _page_title
+		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-titler.pl " & quoted form of _page_title
 on error errMsg number eNum
 	display alert "CouldnÕt run the GitFocus Titler" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
 	set _action_title to "**NOT MATCHED**"
@@ -73,7 +73,7 @@ end try
 
 try
 	set _project_sort to Â
-		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-sorter.pl" & quoted form of _page_title
+		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-sorter.pl " & quoted form of _page_title
 on error errMsg number eNum
 	display alert "CouldnÕt run the GitFocus Sorter" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
 	set _project_sort to ""
