@@ -6,8 +6,8 @@
 --  - Ryan Dotson:       original scripts, editing and documentation
 --  - Rosemary Orchard:  issue content and author extraction, 'Show in OmniFocus'
 --
--- Version 1.0.4
--- 11 January 2020
+-- Version 1.1
+-- 12 January 2020
 --
 -- <https://github.com/nostodnayr/gitfocus>
 --
@@ -21,7 +21,7 @@
 --    + gitfocus-titler.pl: Prettifies the action title
 --
 -- IMPORTANT
--- The sorter script must be edited by you to suit your needs. Instructions for doing
+-- You must edit the sorter script to suit your needs. Instructions for doing
 -- so can be found in that script.
 --
 -- To use, copy all three scripts to ~/Library/Scripts/Applications/Safari/
@@ -34,48 +34,79 @@
 --
 -- Known Limitations: - The script may behave unexpectedly if you have multiple projects
 --                      with the same name.
---                    - If you are using a self-hosted GitLab instance that doesn't have
---                      'gitlab' in the URL, the script will not attempt to extract
---                      the author or title. Edit the _page_url conditional block below
---                      to suit your needs.
 --                    - Author name and issue text may fail if GitLab or GitHub change
 --                      their markup.
---
 ------------------------------------------------------------------------------------------
 
-tell document 1 of application "Safari"
+tell front document of application "Safari"
 	set _page_title to the name as string
 	set _page_url to the URL
 	
+	-- Do a rudimentary check of which site we're dealing with.
+	-- We will try to be robust in handling GitLab pages as we proceed.
 	if _page_url contains "gitlab" then
-		set _issue_content to do JavaScript "x = document.getElementsByClassName('description js-task-list-container is-task-list-enabled')[0].innerText;"
-		set _issue_author to do JavaScript "x = document.getElementsByClassName('author-link')[0].innerText;"
+		set _flavour to "gitlab"
 	else if _page_url contains "github" then
-		set _issue_content to do JavaScript "x = document.getElementsByClassName('d-block comment-body markdown-body  js-comment-body')[0].innerText;"
-		set _issue_author to do JavaScript "x = document.getElementsByClassName('author text-bold link-gray')[0].innerText;"
+		set _flavour to "github"
+	else
+		set _flavour to "unknown"
 	end if
 	
-	-- try to be graceful in failure
-	try
-		set _action_note to _page_url & return & "Created by: " & _issue_author & return & return & _issue_content
-	on error
-		set _action_note to _page_url & return & return & "(Issue author or text could not be determined, sorry. �r/r�)"
-	end try
+	-- If this isn't GitHub, we assume it's GitLab because some instances may not be
+	-- running at URLs that actually contain the string 'gitlab'.
+	if _flavour is "github" then
+		set _issue_content to ¬
+			do JavaScript "x = document.getElementsByClassName('d-block comment-body markdown-body js-comment-body')[0].innerText.trim();"
+	else
+		set _issue_content to ¬
+			do JavaScript "x = document.getElementsByClassName('description js-task-list-container is-task-list-enabled')[0].innerText.trim();"
+	end if
+	
+	if _flavour is "github" then
+		set _issue_author to ¬
+			do JavaScript "x = document.getElementsByClassName('author text-bold link-gray')[0].innerText;"
+	else
+		set _issue_author to ¬
+			do JavaScript "x = document.getElementsByClassName('author-link')[0].innerText;"
+	end if
 end tell
 
+-- Build the note content bit by bit so that if we are missing any data
+-- we can be somewhat informative about it.
 try
-	set _action_title to �
-		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-titler.pl " & quoted form of _page_title
+	set _action_note to _page_url & return
+end try
+
+try
+	set _action_note to _action_note & "Created by: " & _issue_author & return & return
+on error
+	set _action_note to _action_note & "(Could not determine issue author.)" & return & return
+end try
+
+try
+	set _action_note to _action_note & _issue_content
+on error
+	set _action_note to _action_note & "(Could not determine the issue content automatically.)"
+end try
+
+try
+	set _action_title to ¬
+		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-titler.pl " & ¬
+			quoted form of _page_title & ¬
+			" " & _flavour
 on error errMsg number eNum
-	display alert "Couldn�t run the GitFocus Titler" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
+	display alert ¬
+		"Couldn’t run the GitFocus Titler" message "The script will try to continue. You may need to adjust the action title manually." & return & return & ¬
+		"Error " & eNum & ": " & errMsg
 	set _action_title to "**NOT MATCHED**"
 end try
 
 try
-	set _project_sort to �
+	set _project_sort to ¬
 		do shell script "perl ~/Library/Scripts/Applications/Safari/gitfocus-sorter.pl " & quoted form of _page_title
 on error errMsg number eNum
-	display alert "Couldn�t run the GitFocus Sorter" message "The script will try to continue. Stand by." & return & return & "Error " & eNum & ": " & errMsg
+	display alert "Couldn’t run the GitFocus Sorter" message "The script will try to continue. You many need to file the action manually." & return & return & ¬
+		"Error " & eNum & ": " & errMsg
 	set _project_sort to ""
 end try
 
@@ -96,7 +127,7 @@ tell application "OmniFocus"
 				-- display the alert in Safari so we don't have to switch to OmniFocus
 				tell application "Safari"
 					set _alert_heading to "Action Created in " & _project_sort
-					set _alert_result to display alert _alert_heading message _action_title �
+					set _alert_result to display alert _alert_heading message _action_title ¬
 						buttons {"Show in OmniFocus", "OK"} default button "OK" giving up after 5
 				end tell
 				
